@@ -7,43 +7,10 @@ type Config = {
   currentUserName: string;
 };
 
-// Export a setUser function that writes a Config object to the JSON file after setting the current_user_name field
 export function setUser(userName: string) {
   const config = readConfig();
   config.currentUserName = userName;
   writeConfig(config);
-}
-
-// Export a readConfig function that reads the JSON file found at ~/.gatorconfig.json and returns a Config object. 
-// It should read the file from the HOME directory, then decode the JSON string into a new Config object.
-export function readConfig() {
-  const fullPath = getConfigFilePath();
-
-  const data = fs.readFileSync(fullPath, "utf-8");
-  const rawConfig = JSON.parse(data);
-
-  // console.log('read config', rawConfig)
-
-  // return rawConfig;
-  return validateConfig(rawConfig);
-}
-
-function writeConfig(config: Config) {
-  const fullPath = getConfigFilePath();
-
-  const rawConfig = {
-    db_url: "postgres://example",
-    current_user_name: config.currentUserName,
-  };
-
-  const data = JSON.stringify(rawConfig, null, 2);
-  fs.writeFileSync(fullPath, data, { encoding: "utf-8" });
-}
-
-function getConfigFilePath() {
-  const configFileName = ".gatorconfig.json";
-  const homeDir = os.homedir();
-  return path.join(homeDir, configFileName);
 }
 
 function validateConfig(rawConfig: any) {
@@ -63,4 +30,31 @@ function validateConfig(rawConfig: any) {
   };
 
   return config;
+}
+
+export function readConfig() {
+  const fullPath = getConfigFilePath();
+
+  const data = fs.readFileSync(fullPath, "utf-8");
+  const rawConfig = JSON.parse(data);
+
+  return validateConfig(rawConfig);
+}
+
+function getConfigFilePath() {
+  const configFileName = ".gatorconfig.json";
+  const homeDir = os.homedir();
+  return path.join(homeDir, configFileName);
+}
+
+function writeConfig(config: Config) {
+  const fullPath = getConfigFilePath();
+
+  const rawConfig = {
+    db_url: config.dbUrl,
+    current_user_name: config.currentUserName,
+  };
+
+  const data = JSON.stringify(rawConfig, null, 2);
+  fs.writeFileSync(fullPath, data, { encoding: "utf-8" });
 }
