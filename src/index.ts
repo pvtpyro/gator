@@ -1,7 +1,9 @@
+import { handlerAgg } from "./commands/add";
 import {CommandsRegistry, registerCommand, runCommand} from "./commands/commands";
 import { handlerLogin, handlerRegister, handlerResetUsers, handlerUsers } from "./commands/users";
 
 async function main() {
+
     const args = process.argv.slice(2);
 
     if (args.length < 1) {
@@ -17,6 +19,7 @@ async function main() {
     registerCommand(commandsRegistry, "register", handlerRegister);
     registerCommand(commandsRegistry, "reset", handlerResetUsers);
     registerCommand(commandsRegistry, "users", handlerUsers);
+    registerCommand(commandsRegistry, "agg", handlerAgg);
 
     try {
         await runCommand(commandsRegistry, cmdName, ...cmdArgs);
