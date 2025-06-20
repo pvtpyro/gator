@@ -10,6 +10,8 @@ export const users = pgTable("users", {
 	name: text("name").notNull().unique(),
 });
 
+export type User = typeof users.$inferSelect;
+
 export const feeds = pgTable("feeds", {
 	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -28,3 +30,5 @@ export const feeds = pgTable("feeds", {
 	})
 	.onDelete('cascade')
 ]);
+
+export type Feed = typeof feeds.$inferSelect;
