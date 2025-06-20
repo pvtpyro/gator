@@ -8,6 +8,13 @@
       "when": 1750288352220,
       "tag": "0000_square_shinko_yamashiro",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1750376525527,
+      "tag": "0001_purple_sprite",
+      "breakpoints": true
     }
   ]
 }
