@@ -1,7 +1,7 @@
 import { config } from "process";
 import { readConfig } from "src/config";
-import { addFeed } from "src/lib/db/queries/feeds";
-import { getUser } from "src/lib/db/queries/users";
+import { addFeed, listFeeds } from "src/lib/db/queries/feeds";
+import { getUser, getUserById } from "src/lib/db/queries/users";
 import { Feed, User } from "src/lib/db/schema";
 import { fetchFeed, RSSFeed } from "src/rss";
 
@@ -40,4 +40,13 @@ function printFeed(feed: Feed, user: User) {
     console.log(`* name:          ${feed.name}`);
     console.log(`* URL:           ${feed.url}`);
     console.log(`* User:          ${user.name}`);
+}
+
+export async function handlerFeeds() {
+    const feeds = await listFeeds();
+    await Promise.all(feeds.map(async (feed) => {
+        const user = await getUserById(feed.user_id);
+        // console.log("user", user)
+        console.log(`${feed.name}, ${feed.url} added by ${user?.name}`)
+    }))
 }
