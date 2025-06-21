@@ -1,6 +1,6 @@
 import { config } from "process";
 import { readConfig } from "src/config";
-import { addFeed, listFeeds } from "src/lib/db/queries/feeds";
+import { addFeed, createFeedFollow, getFeedByUrl, getFeedFollowsForUser, listFeeds } from "src/lib/db/queries/feeds";
 import { getUser, getUserById } from "src/lib/db/queries/users";
 import { Feed, User } from "src/lib/db/schema";
 import { fetchFeed, RSSFeed } from "src/rss";
@@ -29,6 +29,12 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]) {
         throw new Error(`Failed to create feed`);
     }
 
+    const follow = await createFeedFollow(user.id, newfeed.id);
+
+    if(follow) {
+        console.log(`${follow[0].users.name} is now following ${follow[0].feeds.name}`)
+    } 
+
     console.log("Feed created successfully");
     printFeed(newfeed, user);
 }
@@ -49,4 +55,43 @@ export async function handlerFeeds() {
         // console.log("user", user)
         console.log(`${feed.name}, ${feed.url} added by ${user?.name}`)
     }))
+}
+
+export async function handlerFollow(cmdName: string, ...args: string[]) {
+    if (args.length !== 1) {
+        throw new Error(`usage: ${cmdName} <url>`);
+    }
+
+    const config = readConfig();
+    const user = await getUser(config.currentUserName);
+    if (!user) {
+        throw new Error(`User ${config.currentUserName} not found`);
+    }
+
+    const [url] = args;
+    const feed = await getFeedByUrl(url);
+    if (!feed) {
+        throw new Error(`Feed not found`);
+    }
+
+    const follow = await createFeedFollow(user.id, feed.id);
+
+    if(follow) {
+        console.log(`${follow[0].users.name} is now following ${follow[0].feeds.name}`)
+    } 
+
+}
+
+export async function handlerFollowing() {
+    const feeds = await getFeedFollowsForUser();
+
+    if (!feeds) {
+        throw new Error("You aren't following any feeds");
+    }
+
+    console.log("You are following:")
+    feeds.forEach((feed) => {
+        console.log(feed.feeds.name)
+    })
+
 }
