@@ -59,3 +59,26 @@ export const feed_follows = pgTable("feed_follows", {
 	uniqueIndex('unique_user_feed').on(table.user_id, table.feed_id)
 ])
 export type FeedFollows = typeof feed_follows.$inferSelect;
+
+
+// another method for foreign keys not obvious in docs
+// export const feedFollows = pgTable(
+//   "feed_follows",
+//   {
+//     id: uuid("id").primaryKey().defaultRandom().notNull(),
+//     createdAt: timestamp("created_at").notNull().defaultNow(),
+//     updatedAt: timestamp("updated_at")
+//       .notNull()
+//       .defaultNow()
+//       .$onUpdate(() => new Date()),
+//     userId: uuid("user_id")
+//       .references(() => users.id, { onDelete: "cascade" })
+//       .notNull(),
+//     feedId: uuid("feed_id")
+//       .notNull()
+//       .references(() => feeds.id, { onDelete: "cascade" }),
+//   },
+//   (t) => ({ unq: unique().on(t.userId, t.feedId) }),
+// );
+
+// export type FeedFollow = typeof feedFollows.$inferSelect;
