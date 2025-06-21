@@ -1,5 +1,6 @@
 # gator
 
+check
 
 ## setup
 
