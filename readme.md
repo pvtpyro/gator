@@ -29,3 +29,15 @@ connection string: `psql "postgres://postgres:postgres@localhost:5432/gator"`
 `npx drizzle-kit generate`
 
 `npx drizzle-kit migrate`
+
+## Commands
+
+`login <username>` 
+
+`register <username>`
+
+`reset` to wipe the db of users
+
+`users` to list all users
+
+`addfeed <url>` to add a feed and follow it
