@@ -1,9 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "..";
-import { feed_follows, feeds, users } from "../schema";
+import { feed_follows, feeds, User, users } from "../schema";
 import { firstOrUndefined } from "./utils";
-import { getUser, getUsers } from "./users";
-import { readConfig } from "src/config";
 
 export async function addFeed(name: string, url: string, id: string) {
     const result = await db.insert(feeds).values({name: name, url: url, user_id: id}).returning();
@@ -44,14 +42,7 @@ export async function createFeedFollow(user_id: string, feed_id:string) {
 
 }
 
-export async function getFeedFollowsForUser() {
-    const config = readConfig();
-    const user = await getUser(config.currentUserName);
-
-    if(!user) {
-        throw new Error("user not found")
-    }
-
+export async function getFeedFollowsForUser(user: User) {
     try {
         const userfeeds = await db.select().from(feed_follows)
             .innerJoin(feeds, eq(feed_follows.feed_id, feeds.id))
