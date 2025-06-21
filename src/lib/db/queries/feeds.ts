@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "..";
 import { feed_follows, feeds, User, users } from "../schema";
 import { firstOrUndefined } from "./utils";
@@ -54,4 +54,13 @@ export async function getFeedFollowsForUser(user: User) {
         console.log(err)
     }
 
+}
+
+export async function deleteFeedFollow(feedId: string, userId: string) {
+  const [result] = await db
+    .delete(feed_follows)
+    .where(and(eq(feed_follows.feed_id, feedId), eq(feed_follows.user_id, userId)))
+    .returning();
+
+  return result;
 }

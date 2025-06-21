@@ -1,4 +1,4 @@
-import { addFeed, createFeedFollow, getFeedByUrl, getFeedFollowsForUser, listFeeds } from "src/lib/db/queries/feeds";
+import { addFeed, createFeedFollow, deleteFeedFollow, getFeedByUrl, getFeedFollowsForUser, listFeeds } from "src/lib/db/queries/feeds";
 import { getUserById } from "src/lib/db/queries/users";
 import { Feed, User } from "src/lib/db/schema";
 import { fetchFeed } from "src/rss";
@@ -78,4 +78,24 @@ export async function handlerFollowing(cmdName: string, user: User, ...args: str
         console.log(feed.feeds.name)
     })
 
+}
+
+export async function handlerUnfollow(cmdName: string, user: User, ...args: string[]) {
+    if (args.length !== 1) {
+        throw new Error(`usage: ${cmdName} <url>`);
+    }
+
+    const [url] = args;
+
+    let feed = await getFeedByUrl(url);
+    if (!feed) {
+        throw new Error(`Feed not found for url: ${url}`);
+    }
+
+    const result = await deleteFeedFollow(feed.id, user.id);
+    if (!result) {
+        throw new Error(`Failed to unfollow feed: ${url}`);
+    }
+
+    console.log(`%s unfollowed successfully!`, feed.name);
 }
