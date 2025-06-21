@@ -99,3 +99,4 @@ export async function handlerUnfollow(cmdName: string, user: User, ...args: stri
 
     console.log(`%s unfollowed successfully!`, feed.name);
 }
+
